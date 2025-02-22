@@ -1,0 +1,713 @@
+{% extends "base.html" %}
+{% block title %}Video Feed{% endblock %}
+{% block content %}
+<div class="container text-center">
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <br> <br>
+    <h1>Video Feed Options</h1>
+    <br>
+    <h3>Choose video source:</h3>
+    <br>
+    <button id="cameraBtn" class="btn btn-primary">Device's Camera/WebCam</button>
+    <button id="fileBtn" class="btn btn-primary">Upload from file system</button>
+</div>
+
+<script>
+    document.getElementById('cameraBtn').addEventListener('click', function() {
+        // Use getUserMedia API to access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                // Show the camera stream in a video element
+                var video = document.createElement('video');
+                video.srcObject = stream;
+                video.autoplay = true;
+                document.body.appendChild(video);
+            })
+            .catch(function(error) {
+                console.error('Error accessing camera:', error);
+            });
+    });
+
+    document.getElementById('fileBtn').addEventListener('click', function() {
+        // Create an input element for selecting a file
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'video/mp4';
+        input.addEventListener('change', function() {
+            // Get the selected file
+            var file = input.files[0];
+            if (file) {
+                // Create a video element to display the selected file
+                var video = document.createElement('video');
+                video.src = URL.createObjectURL(file);
+                video.controls = true;
+                document.body.appendChild(video);
+            }
+        });
+        // Trigger a click event on the input element
+        input.click();
+    });
+</script>
+{% endblock %}
+
+
+
+
+{% extends "base.html" %}
+{% block title %}Video Feed{% endblock %}
+{% block content %}
+<div class="container text-center">
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <br> <br>
+    <h1>Video Feed Options</h1>
+    <br>
+    <h3>Choose video source:</h3>
+    <br>
+    <button id="cameraBtn" class="btn btn-primary">Device's Camera/WebCam</button>
+    <button id="fileBtn" class="btn btn-primary">Upload from file system</button>
+</div>
+
+<div class="container">
+    <video id="videoPlayer" controls></video> <!-- Element to display processed video -->
+</div>
+
+<script>
+    document.getElementById('cameraBtn').addEventListener('click', function() {
+        // Use getUserMedia API to access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                startProcessing(stream);  // Pass the camera stream to the processing function
+            })
+            .catch(function(error) {
+                console.error('Error accessing camera:', error);
+            });
+    });
+
+    document.getElementById('fileBtn').addEventListener('click', function() {
+        // Create an input element for selecting a file
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'video/mp4';
+        input.addEventListener('change', function() {
+            // Get the selected file
+            var file = input.files[0];
+            if (file) {
+                var fileReader = new FileReader();
+                fileReader.onload = function(event) {
+                    var videoBlob = event.target.result;
+                    startProcessing(videoBlob);  // Pass the uploaded video blob to the processing function
+                };
+                fileReader.readAsDataURL(file);
+            }
+        });
+        // Trigger a click event on the input element
+        input.click();
+    });
+
+    function startProcessing(videoSource) {
+        // Send the selected video source to the backend for processing
+        fetch('/process-video', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ videoSource: videoSource }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to start video processing');
+            }
+            return response.blob();  // Convert response to blob (processed video frames)
+        })
+        .then(blob => {
+             // Log the blob URL to the console
+             console.log('Blob URL:', URL.createObjectURL(blob));
+            // Display the processed video in the video player
+            var videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.src = URL.createObjectURL(blob);
+            videoPlayer.play();  // Auto-play the video
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to start video processing. Please try again.');
+        });
+    }
+</script>
+{% endblock %}
+
+
+
+{% extends "base.html" %}
+{% block title %}Video Feed{% endblock %}
+{% block content %}
+<div class="container text-center">
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <br> <br>
+    <h1>Video Feed Options</h1>
+    <br>
+    <h3>Choose video source:</h3>
+    <br>
+    <button id="cameraBtn" class="btn btn-primary">Device's Camera/WebCam</button>
+    <button id="fileBtn" class="btn btn-primary">Upload from file system</button>
+</div>
+
+<div class="container">
+    <video id="videoPlayer" controls></video> <!-- Element to display processed video -->
+</div>
+
+<script>
+    document.getElementById('cameraBtn').addEventListener('click', function() {
+        // Use getUserMedia API to access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                startProcessing(stream);  // Pass the camera stream to the processing function
+            })
+            .catch(function(error) {
+                console.error('Error accessing camera:', error);
+            });
+    });
+
+    document.getElementById('fileBtn').addEventListener('click', function() {
+        // Create an input element for selecting a file
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'video/mp4';
+        input.addEventListener('change', function() {
+            // Get the selected file
+            var file = input.files[0];
+            if (file) {
+                var fileReader = new FileReader();
+                fileReader.onload = function(event) {
+                    var videoBlob = event.target.result;
+                    startProcessing(videoBlob);  // Pass the uploaded video blob to the processing function
+                };
+                fileReader.readAsDataURL(file);
+            }
+        });
+        // Trigger a click event on the input element
+        input.click();
+    });
+
+    function startProcessing(videoSource) {
+        // Send the selected video source to the backend for processing
+        fetch('/process-video', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ videoSource: videoSource }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to start video processing');
+            }
+            return response.blob();  // Convert response to blob (processed video frames)
+        })
+        .then(blob => {
+             // Log the blob URL to the console
+             console.log('Blob URL:', URL.createObjectURL(blob));
+            // Display the processed video in the video player
+            var videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.src = URL.createObjectURL(blob);
+            videoPlayer.play();  // Auto-play the video
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to start video processing. Please try again.');
+        });
+    }
+</script>
+{% endblock %}
+
+
+
+{% extends "base.html" %}
+{% block title %}Video Feed{% endblock %}
+{% block content %}
+<div class="container text-center">
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <br> <br>
+    <h1>Video Feed Options</h1>
+    <br>
+    <h3>Choose video source:</h3>
+    <br>
+    <button id="cameraBtn" class="btn btn-primary">Device's Camera/WebCam</button>
+    <button id="fileBtn" class="btn btn-primary">Upload from file system</button>
+</div>
+
+<div class="container">
+    <video id="videoPlayer" controls></video> <!-- Element to display processed video -->
+</div>
+
+<script>
+    document.getElementById('cameraBtn').addEventListener('click', function() {
+        console.log("Camera button clicked");
+        // Use getUserMedia API to access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                console.log("Camera stream obtained:", stream);
+                startProcessing(stream);  // Pass the camera stream to the processing function
+            })
+            .catch(function(error) {
+                console.error('Error accessing camera:', error);
+            });
+    });
+
+    document.getElementById('fileBtn').addEventListener('click', function() {
+        console.log("File button clicked");
+        // Create an input element for selecting a file
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'video/mp4';
+        input.addEventListener('change', function() {
+            // Get the selected file
+            var file = input.files[0];
+            console.log("Selected file:", file);
+            if (file) {
+                var fileReader = new FileReader();
+                fileReader.onload = function(event) {
+                    var videoBlob = event.target.result;
+                    console.log("Video blob created from file:", videoBlob);
+                    startProcessing(videoBlob);  // Pass the uploaded video blob to the processing function
+                };
+                fileReader.readAsDataURL(file);
+            }
+        });
+        // Trigger a click event on the input element
+        input.click();
+    });
+
+    function startProcessing(videoSource) {
+        console.log("Start processing video:", videoSource);
+        // Send the selected video source to the backend for processing
+        fetch('/process-video', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ videoSource: videoSource }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to start video processing');
+            }
+            console.log("Processing response received:", response);
+            return response.blob();  // Convert response to blob (processed video frames)
+        })
+        .then(blob => {
+            console.log("Blob received:", blob);
+            console.log("Blob type:", blob.type);
+            // Log the blob URL to the console
+            console.log('Blob URL:', URL.createObjectURL(blob));
+            // Display the processed video in the video player
+            var videoPlayer = document.getElementById('videoPlayer');
+            console.log("Video player element:", videoPlayer);
+            videoPlayer.src = URL.createObjectURL(blob);
+            videoPlayer.play();  // Auto-play the video
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to start video processing. Please try again.');
+        });
+    }
+</script>
+{% endblock %}
+
+{% extends "base.html" %}
+{% block title %}Video Feed{% endblock %}
+{% block content %}
+<div class="container text-center">
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <br> <br>
+    <h1>Video Feed Options</h1>
+    <br>
+    <h3>Choose video source:</h3>
+    <br>
+    <button id="cameraBtn" class="btn btn-primary">Device's Camera/WebCam</button>
+    <button id="fileBtn" class="btn btn-primary">Upload from file system</button>
+</div>
+
+<div class="container">
+    <video id="videoPlayer" controls></video> <!-- Element to display processed video -->
+</div>
+
+<script>
+    document.getElementById('cameraBtn').addEventListener('click', function() {
+        // Use getUserMedia API to access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                startProcessing(stream);  // Pass the camera stream to the processing function
+            })
+            .catch(function(error) {
+                console.error('Error accessing camera:', error);
+            });
+    });
+
+    document.getElementById('fileBtn').addEventListener('click', function() {
+        // Create an input element for selecting a file
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'video/mp4';
+        input.addEventListener('change', function() {
+            // Get the selected file
+            var file = input.files[0];
+            if (file) {
+                var fileReader = new FileReader();
+                fileReader.onload = function(event) {
+                    var videoBlob = event.target.result;
+                    startProcessing(videoBlob);  // Pass the uploaded video blob to the processing function
+                };
+                fileReader.readAsDataURL(file);
+            }
+        });
+        // Trigger a click event on the input element
+        input.click();
+    });
+
+    function startProcessing(videoSource) {
+        console.log('Starting video processing...');
+    
+        // Send the selected video source to the backend for processing
+        fetch('/process-video', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ videoSource: videoSource }),
+        })
+        .then(response => {
+            console.log('Received response from server:', response);
+            if (!response.ok) {
+                throw new Error('Failed to start video processing');
+            }
+            return response.blob();  // Convert response to blob (processed video frames)
+        })
+        .then(blob => {
+            console.log('Received blob from server:', blob);
+        
+            // Log the blob URL to the console
+            console.log('Blob URL:', URL.createObjectURL(blob));
+        
+            // Create a new MediaSource object
+            var mediaSource = new MediaSource();
+        
+            // Attach an event listener to handle when the MediaSource is open
+            mediaSource.addEventListener('sourceopen', function() {
+                console.log('MediaSource opened');
+        
+                // Create a new URL object from the blob URL
+                var url = URL.createObjectURL(blob);
+        
+                // Create a new source buffer
+                var sourceBuffer = mediaSource.addSourceBuffer('video/mp4');
+        
+                // Append the blob data to the source buffer
+                sourceBuffer.appendBuffer(blob);
+        
+                // Set the source of the video player to the MediaSource object
+                var videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.src = URL.createObjectURL(mediaSource);
+                console.log('Video player:', videoPlayer);
+        
+                // Auto-play the video
+                videoPlayer.play();
+            });
+        
+            // Set the MediaSource object as the source of the video player
+            // videoPlayer.src = URL.createObjectURL(mediaSource);
+        })
+        
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to start video processing. Please try again.');
+        });
+    }
+
+    async function readStream(reader) {
+        const decoder = new TextDecoder('utf-8');
+        let buffer = '';
+        let frameCount = 0;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
+            }
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // Parse each frame as it arrives
+            while (true) {
+                const frameStart = buffer.indexOf('--frame\r\n');
+                const frameEnd = buffer.indexOf('\r\n\r\n', frameStart);
+                if (frameStart === -1 || frameEnd === -1) {
+                    break;
+                }
+
+                const frameData = buffer.substring(frameStart + 8, frameEnd);
+                const frameBytes = Uint8Array.from(frameData, c => c.charCodeAt(0));
+
+                // Display the frame in the video player
+                displayFrame(frameBytes);
+
+                buffer = buffer.substring(frameEnd + 4);
+                frameCount++;
+            }
+        }
+    }
+
+    function displayFrame(frameBytes) {
+        // Convert frame bytes to blob
+        const blob = new Blob([frameBytes], { type: 'image/jpeg' });
+    
+        // Create an object URL for the blob
+        const objectURL = URL.createObjectURL(blob);
+    
+        // Display the frame in the video player
+        const videoPlayer = document.getElementById('videoPlayer');
+        videoPlayer.src = objectURL;
+    }
+    
+</script>
+{% endblock %}
+
+
+
+{% extends "base.html" %}
+{% block title %}Video Feed{% endblock %}
+{% block content %}
+<div class="container text-center">
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <br> <br>
+    <h1>Video Feed Options</h1>
+    <br>
+    <h3>Choose video source:</h3>
+    <br>
+    <button id="cameraBtn" class="btn btn-primary">Device's Camera/WebCam</button>
+    <button id="fileBtn" class="btn btn-primary">Upload from file system</button>
+</div>
+
+<div class="container">
+    <video id="videoPlayer" controls></video> <!-- Element to display processed video -->
+</div>
+
+<script>
+    document.getElementById('cameraBtn').addEventListener('click', function() {
+        // Use getUserMedia API to access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                startProcessing(stream);  // Pass the camera stream to the processing function
+            })
+            .catch(function(error) {
+                console.error('Error accessing camera:', error);
+            });
+    });
+
+    document.getElementById('fileBtn').addEventListener('click', function() {
+        // Create an input element for selecting a file
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'video/mp4';
+        input.addEventListener('change', function() {
+            // Get the selected file
+            var file = input.files[0];
+            if (file) {
+                var fileReader = new FileReader();
+                fileReader.onload = function(event) {
+                    var videoBlob = event.target.result;
+                    startProcessing(videoBlob);  // Pass the uploaded video blob to the processing function
+                };
+                fileReader.readAsDataURL(file);
+            }
+        });
+        // Trigger a click event on the input element
+        input.click();
+    });
+
+    async function startProcessing(videoSource) {
+        console.log('Starting video processing...');
+        try {
+            const response = await fetch('/process-video', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ videoSource: videoSource }),
+            });
+            console.log('Received response from server:', response);
+            if (!response.ok) {
+                throw new Error('Failed to start video processing');
+            }
+            const reader = response.body.getReader();
+            await readStream(reader);
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to start video processing. Please try again.');
+        }
+    }
+
+    async function readStream(reader) {
+        const decoder = new TextDecoder('utf-8');
+        let buffer = '';
+        let frameCount = 0;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
+            }
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // Parse each frame as it arrives
+            while (true) {
+                const frameStart = buffer.indexOf('--frame\r\n');
+                const frameEnd = buffer.indexOf('\r\n\r\n', frameStart);
+                if (frameStart === -1 || frameEnd === -1) {
+                    break;
+                }
+
+                const frameData = buffer.substring(frameStart + 8, frameEnd);
+                const frameBytes = Uint8Array.from(frameData, c => c.charCodeAt(0));
+
+                // Display the frame in the video player
+                displayFrame(frameBytes);
+
+                buffer = buffer.substring(frameEnd + 4);
+                frameCount++;
+            }
+        }
+    }
+
+    function displayFrame(frameBytes) {
+        // Convert frame bytes to blob
+        const blob = new Blob([frameBytes], { type: 'image/jpeg' });
+    
+        // Create an object URL for the blob
+        const objectURL = URL.createObjectURL(blob);
+    
+        // Display the frame in the video player
+        const videoPlayer = document.getElementById('videoPlayer');
+        videoPlayer.src = objectURL;
+    }
+</script>
+{% endblock %}
+{% extends "base.html" %}
+{% block title %}Video Feed{% endblock %}
+{% block content %}
+<div class="container text-center">
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <br> <br>
+    <h1>Video Feed Options</h1>
+    <br>
+    <h3>Choose video source:</h3>
+    <br>
+    <button id="cameraBtn" class="btn btn-primary">Device's Camera/WebCam</button>
+    <button id="fileBtn" class="btn btn-primary">Upload from file system</button>
+</div>
+
+<div class="container">
+    <video id="videoPlayer" controls></video> <!-- Element to display processed video -->
+</div>
+
+<script>
+    document.getElementById('cameraBtn').addEventListener('click', function() {
+        // Use getUserMedia API to access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                startProcessing(stream);  // Pass the camera stream to the processing function
+            })
+            .catch(function(error) {
+                console.error('Error accessing camera:', error);
+            });
+    });
+
+    document.getElementById('fileBtn').addEventListener('click', function() {
+        // Create an input element for selecting a file
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'video/mp4';
+        input.addEventListener('change', function() {
+            // Get the selected file
+            var file = input.files[0];
+            if (file) {
+                var fileReader = new FileReader();
+                fileReader.onload = function(event) {
+                    var videoBlob = event.target.result;
+                    startProcessing(videoBlob);  // Pass the uploaded video blob to the processing function
+                };
+                fileReader.readAsDataURL(file);
+            }
+        });
+        // Trigger a click event on the input element
+        input.click();
+    });
+
+    async function startProcessing(videoSource) {
+        console.log('Starting video processing...');
+        try {
+            const response = await fetch('/process-video', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ videoSource: videoSource }),
+            });
+            console.log('Received response from server:', response);
+            if (!response.ok) {
+                throw new Error('Failed to start video processing');
+            }
+            const reader = response.body.getReader();
+            await readStream(reader);
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to start video processing. Please try again.');
+        }
+    }
+
+    async function readStream(reader) {
+        const decoder = new TextDecoder('utf-8');
+        let buffer = '';
+        let frameCount = 0;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
+            }
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // Parse each frame as it arrives
+            while (true) {
+                const frameStart = buffer.indexOf('--frame\r\n');
+                const frameEnd = buffer.indexOf('\r\n\r\n', frameStart);
+                if (frameStart === -1 || frameEnd === -1) {
+                    break;
+                }
+
+                const frameData = buffer.substring(frameStart + 8, frameEnd);
+                const frameBytes = Uint8Array.from(frameData, c => c.charCodeAt(0));
+
+                // Display the frame in the video player
+                displayFrame(frameBytes);
+
+                buffer = buffer.substring(frameEnd + 4);
+                frameCount++;
+            }
+        }
+    }
+
+    function displayFrame(frameBytes) {
+        // Convert frame bytes to blob
+        const blob = new Blob([frameBytes], { type: 'image/jpeg' });
+    
+        // Create an object URL for the blob
+        const objectURL = URL.createObjectURL(blob);
+    
+        // Display the frame in the video player
+        const videoPlayer = document.getElementById('videoPlayer');
+        videoPlayer.src = objectURL;
+    }
+</script>
+{% endblock %}

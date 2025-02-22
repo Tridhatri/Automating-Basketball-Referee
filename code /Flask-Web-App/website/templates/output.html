@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Output</title>
+</head>
+<body>
+    <h1>Video Output</h1>
+    <div>
+        <img id="video_feed" src="" alt="Video Feed">
+    </div>
+    <div id="variable_values">
+        <p>Dribble Count: <span id="dribble_count"></span></p>
+        <p>Travel Detected: <span id="travel_detected"></span></p>
+        <p>Steps Count: <span id="steps_count"></span></p>
+    </div>
+
+    <script>
+        const videoFeed = document.getElementById('video_feed');
+        const dribbleCount = document.getElementById('dribble_count');
+        const travelDetected = document.getElementById('travel_detected');
+        const stepsCount = document.getElementById('steps_count');
+
+        // Start the video stream
+        if (window.location.protocol === 'https:') {
+            videoFeed.src = '/output_video?video_source=0';
+        } else {
+            videoFeed.src = '/output_video?video_source=0';
+        }
+
+        // Function to update variable values
+        function updateVariables(data) {
+            const lines = data.trim().split('\n');
+            const dribbleCountText = lines[0].substring(14);
+            const travelDetectedText = lines[1].substring(16);
+            const stepsCountText = lines[2].substring(12);
+
+            dribbleCount.textContent = dribbleCountText;
+            travelDetected.textContent = travelDetectedText;
+            stepsCount.textContent = stepsCountText;
+        }
+
+        // Event listener for receiving updates from server
+        const eventSource = new EventSource('/variable_updates_generator');
+        eventSource.onmessage = function(event) {
+            updateVariables(event.data);
+        };
+    </script>
+</body>
+</html>

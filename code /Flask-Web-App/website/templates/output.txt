@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Output Video</title>
+</head>
+<body>
+    <h2>Output Video</h2>
+    <video controls autoplay>
+        <!-- Use the video_source variable passed from the server to specify the video URL -->
+        <source src="{{ url_for('static', filename='uploads/' + video_source) }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</body>
+</html>

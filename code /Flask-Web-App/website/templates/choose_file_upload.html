@@ -1,0 +1,27 @@
+<!-- choose_file_upload.html -->
+{% extends "base.html" %} 
+{% block title %}Home{% endblock %} 
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose File Upload</title>
+</head>
+<body>
+    <h1>Choose File Upload Option</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" class="btn btn-primary" name="video_file">
+        <input type="submit" class="btn btn-primary" value="Upload Video">
+       
+    </form>
+    <br>
+    <br>
+    <br>
+    <form action="/camera" method="get">
+        <button type="submit" class="btn btn-primary">Use device's camera</button>
+    </form>
+</body>
+</html>
+{% endblock %}

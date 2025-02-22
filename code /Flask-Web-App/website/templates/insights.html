@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Insights{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Video Insights</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Frame</th>
+                <th>Dribble Count</th>
+                <th>Travel Detected</th>
+                <th>Step Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for frame, dribble_count, travel_detected, step_count in frames %}
+            <tr>
+                <td><img src="data:image/jpeg;base64,{{ frame }}" alt="Frame"></td>
+                <td>{{ dribble_count }}</td>
+                <td>{{ travel_detected }}</td>
+                <td>{{ step_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
