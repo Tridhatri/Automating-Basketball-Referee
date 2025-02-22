@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Feed</title>
+</head>
+<body>
+    <div>
+        <h1>Video Feed</h1>
+        <p>Total Dribble Count: <span id="dribbleCount"></span></p>
+        <p>Travel Detected: <span id="travelDetected"></span></p>
+        <img id="videoFeed" src="{{ url_for('video_feed') }}" alt="Video Feed">
+        <div id="status" class="status">Dribble Count: {{ total_dribble_count }} | Travel Detected: {{ travel_detected }}</div>
+        <div id = "Step Count" class = "step_count"> Steps Taken : {{ total_step_count }}</div>
+    </div>
+</body>
+</html>

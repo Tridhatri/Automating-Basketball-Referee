@@ -1,0 +1,24 @@
+<CameraLayout>:
+    orientation: 'vertical'
+
+    Image:
+        id: camera_feed
+        allow_stretch: True
+        keep_ratio: True
+    Button:
+        text: 'Test Button'
+        size_hint: None, None
+        size: 150, 50
+        pos_hint: {'center_x': 0.5, 'top': 1}
+
+<StepCounter>:
+    orientation: 'vertical'
+
+    Label:
+        id: step_count_label
+        text: 'Step Count: 0'
+        font_size: 18
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'right': 1, 'top': 1}
+        color: 0, 1, 0

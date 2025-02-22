@@ -1,0 +1,39 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HoopsEye - Basketball Travel Detection</title>
+</head>
+<body>
+    <h1>HoopsEye - Basketball Travel Detection</h1>
+    <div>
+        <img id="video_feed" src="{{ url_for('video_feed') }}" width="640" height="480">
+    </div>
+    <div id="status" class="status">Dribble Count: <span id="dribble_count"></span> | Travel Detected: <span id="travel_detected"></span></div>
+    <div id="step_count" class="step_count"> Steps Taken : <span id="step_count_value"></span></div>
+
+    <form action="/upload_video" method="post" enctype="multipart/form-data">
+        <input type="file" name="video_file">
+        <input type="submit" value="Upload Video">
+    </form>
+    <a href="/video_feed">Switch to Live Camera</a>
+
+    <!-- Include Socket.IO library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+    <script>
+        // Connect to Socket.IO server
+        var socket = io();
+
+        // Listen for 'update_data' event
+        socket.on('update_data', function(data) {
+            document.getElementById('dribble_count').innerText = data.total_dribble_count;
+            document.getElementById('step_count_value').innerText = data.total_step_count;
+            document.getElementById('travel_detected').innerText = data.travel_detected;
+        });
+    </script>
+</body>
+</html>
+

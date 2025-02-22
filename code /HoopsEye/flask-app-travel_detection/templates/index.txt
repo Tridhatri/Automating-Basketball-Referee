@@ -1,0 +1,22 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HoopsEye - Basketball Travel Detection</title>
+</head>
+<body>
+    <h1>HoopsEye - Basketball Travel Detection</h1>
+    <div>
+        <img id="video_feed" src="{{ url_for('video_feed') }}" width="640" height="480">
+    </div>
+    <div id="status" class="status">Dribble Count: {{ total_dribble_count }} | Travel Detected: {{ travel_detected }}</div>
+    <div id = "Step Count" class = "step_count"> Steps Taken : {{ total_step_count }}</div>
+
+    <form action="/upload_video" method="post" enctype="multipart/form-data">
+        <input type="file" name="video_file">
+        <input type="submit" value="Upload Video">
+    </form>
+    <a href="/video_feed">Switch to Live Camera</a>
+</body>
+</html> {% endcomment %}

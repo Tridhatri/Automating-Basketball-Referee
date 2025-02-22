@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step Counter</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Step Counter</h1>
+        {% if video_path %}
+        <div class="video-container">
+            <img id="video-feed" src="{{ url_for('video_feed', video_path=video_path) }}" alt="Video Feed">
+        </div>
+        {% endif %}
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="video_file" accept="video/*">
+            <button type="submit">Upload Video</button>
+        </form>
+        <div class="footer">
+            <p>Step Count: <span id="step-count">0</span></p>
+        </div>
+    </div>
+    <script src="{{ url_for('static', path='/js/scripts.js') }}"></script>
+</body>
+</html>

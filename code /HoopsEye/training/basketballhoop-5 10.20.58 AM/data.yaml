@@ -1,0 +1,14 @@
+names:
+- ball
+- hoop
+nc: 2
+roboflow:
+  license: CC BY 4.0
+  project: basketballhoop-qogci
+  url: https://universe.roboflow.com/roboflow-2dqiu/basketballhoop-qogci/dataset/5
+  version: 5
+  workspace: roboflow-2dqiu
+#test: ../test/images
+test: basketballhoop-5/test/images
+train: basketballhoop-5/train/images
+val: basketballhoop-5/valid/images
